@@ -59,10 +59,12 @@ class Board
   end
 
   def add_piece(coords, piece)
+
     if location_valid?(coords)
       # On the board, the axes are actually reversed (rows are x and cols are y)
       @board_arr[coords[1]][coords[0]] = piece
     end
+
   end
 
   def render
