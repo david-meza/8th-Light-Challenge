@@ -5,6 +5,8 @@ My solution to implementing a better Tic Tac Toe game
 
 Just fork or clone this repo, and go to the /lib folder on your command-line interface. Then type `ruby game.rb` and follow the instructions to get you started. Have fun!
 
+***
+
 ### Walkthrough
 
 ##### Game
@@ -22,6 +24,8 @@ The player class handles all player-related functionality. The idea in making di
 ###### Computer (AI)
 
 The computer is pretty smart. It'll follow the following procedure to perform a move:
+
+
 1. First, it'll try to find a winning move
 2. Second, it'll try to find a move that will prevent it from losing
 3. Lastly, if none of these moves are plausible. It'll perform a random move, although it has a preference for placing its marker on the middle of the board if its available.
