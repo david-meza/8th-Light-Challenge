@@ -12,14 +12,22 @@ class Board
     @board_arr = board_arr || Array.new(3) { Array.new(3) }
   end
 
-  def add_piece(coords, piece)
+  def add_piece(coords, piece, silence = false)
     # Returns nil (falsey), unless we explicitly return true
-    if location_valid?(coords)
+    if location_valid?(coords, silence)
       # On the board, the axes are actually reversed (rows are x and cols are y)
       @board_arr[coords[1]][coords[0]] = piece
       return true
     end
 
+  end
+
+  # For AI purposes only.
+  def remove_piece(coords, piece)
+    # Can't remove a piece that's not the computers
+    if @board_arr[coords[1]][coords[0]] == piece
+      @board_arr[coords[1]][coords[0]] = nil
+    end
   end
 
   def render
@@ -51,9 +59,9 @@ class Board
 
     private
 
-    def location_valid?(coords)
+    def location_valid?(coords, silence)
       if inside_board?(coords)
-        coordinates_available?(coords)
+        coordinates_available?(coords, silence)
       end
     end
 
@@ -63,9 +71,9 @@ class Board
       inside
     end
 
-    def coordinates_available?(coords)
+    def coordinates_available?(coords, silence)
       available = @board_arr[coords[1]][coords[0]].nil?
-      puts "There is already a piece in that cell. Try a different one".yellow unless available
+      puts "There is already a piece in that cell. Try a different one".yellow unless available || silence
       available
     end
 

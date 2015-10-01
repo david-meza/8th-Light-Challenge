@@ -1,4 +1,5 @@
 require 'colorize'
+require 'pry'
 
 # Handles all player-related functionality
 class Player
@@ -25,16 +26,17 @@ class Computer < Player
 
   def get_coordinates
     notify_user
-    dup = deep_dupe(@board.board_arr)
-    coords = find_best_move(dup)
+    board_copy = deep_dupe(@board.board_arr)
+    coords = find_best_move(board_copy)
     @board.add_piece(coords, @piece)
   end
 
     private
 
     def notify_user
-      puts "The Computer will now perform its move!".light_cyan.on_magenta
-      sleep 2
+      puts "#{name} will now perform its move!".light_cyan.on_magenta
+      # Putting our insanely fast computers to rest API request style (jk)!
+      sleep 1.5
     end
 
     # Make a deep copy of the board so we can make fake attempts at placing pieces
@@ -51,17 +53,20 @@ class Computer < Player
       copy
     end
 
-    def find_best_move(dup)
-      find_winning_move(dup, @piece) || find_not_losing_move(dup, @piece_opponent) || perform_random_move(dup)
+    def find_best_move(board_copy)
+      test = Board.new(board_copy)
+      find_winning_move(test, @piece) || find_not_losing_move(test) || perform_any_available_move(test)
     end
 
-    def find_winning_move(dup, piece)
+    def find_winning_move(test, piece)
       3.times do |x|
         3.times do |y|
-          @test = Board.new(dup)
-          @test.add_piece([x,y], piece)
-          if @test.winning_combination?(piece)
-            return [x, y]
+          if test.add_piece([x,y], piece, true)
+            if test.winning_combination?(piece)
+              return p [x, y]
+            else
+              test.remove_piece([x,y], piece)
+            end
           end
         end
       end
@@ -69,13 +74,14 @@ class Computer < Player
     end
 
     # For clarity's sake. This is just a wrapper
-    def find_not_losing_move(dup, opponent_piece)
-      find_winning_move(dup, opponent_piece)
+    def find_not_losing_move(test)
+      find_winning_move(test, @piece_opponent)
     end
 
-    def perform_random_move(dup)
+    def perform_any_available_move(test)
+      return [1,1] if test.board_arr[1][1].nil?
       coords = [rand(3), rand(3)]
-      until dup[coords[1]][coords[0]].nil?
+      until test.add_piece(coords, @piece, true)
         coords = [rand(3), rand(3)]
       end
       coords

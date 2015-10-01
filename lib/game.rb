@@ -120,7 +120,7 @@ class Game
 
     def check_draw
       draw = @board.full?
-      puts "Bummer, you've drawn...".colorize(:light_blue).on_blue.underline if draw
+      puts "Bummer, you've drawn...".light_white.on_blue.underline if draw
       draw
     end
 
